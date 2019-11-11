@@ -1,9 +1,12 @@
 import React from 'react';
 import axios from 'axios';
+import moment from "moment";
 
 import Titles from './components/Titles';
 import Response from './components/Response';
 import Form from "./components/Form";
+
+moment.locale('fr');
 
 const API_KEY = 'bcd6a93bf6dc84270d68f9b866327fcb';
 
@@ -13,14 +16,12 @@ class App extends React.Component {
     temp: undefined,
     temp_min: undefined,
     temp_max: undefined,
-    city: undefined,
     icon: undefined,
+    wind: undefined,
+    visibility: undefined,
+    humidity: undefined,
     description: undefined,
-    temp_forecast_1: undefined,
-    temp_forecast_2: undefined,
-    temp_forecast_3: undefined,
-    temp_forecast_4: undefined,
-    temp_forecast_5: undefined,
+    forecast: [],
     error: undefined
   }
 
@@ -29,15 +30,17 @@ class App extends React.Component {
     const city = e.target.elements.city.value;
     axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=fr`)
       .then(res => {
-        const currentTemp = res.data;
+        const all = res.data;
         this.setState(
           {
-            temp: (currentTemp.main.temp).toFixed(),
-            temp_min: (currentTemp.main.temp_min).toFixed(),
-            temp_max: (currentTemp.main.temp_max).toFixed(),
-            city: currentTemp.main.name,
-            icon: currentTemp.weather[0].main,
-            description: currentTemp.weather[0].description
+            temp: (all.main.temp).toFixed(),
+            temp_min: (all.main.temp_min).toFixed(),
+            temp_max: (all.main.temp_max).toFixed(),
+            wind: (all.wind.speed).toFixed(),
+            visibility: all.visibility ? all.visibility : "N/A",
+            humidity: all.main.humidity,
+            icon: all.weather[0].main,
+            description: all.weather[0].description
           }
          );
          this.getForecast(city);
@@ -46,14 +49,19 @@ class App extends React.Component {
   }
 
   getForecast = async (city) => {
-    axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric&cnt=5&lang=fr`)
+    axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric&cnt=5&lang=fr&cnt=5`)
       .then(res => {
         const all = res.data;
         this.setState(
           {
-            temp_forecast_1: (all.list[1].main.temp).toFixed()
+            forecast: all.list.map(item => ({
+                date: moment.unix(item.dt).format('D MMM HH:mm'),
+                temp: (item.main.temp).toFixed(),
+                humidity: item.main.humidity,
+                weather: item.weather[0].main
+            }))
           }
-         );
+         )
       })
       .catch()
   }
@@ -70,7 +78,17 @@ class App extends React.Component {
           </div>
         </div>
         {/*{this.state.temperature && this.state.temp_forecast_1 ? (*/}
-        <Response temp={this.state.temp} temp_min={this.state.temp_min} temp_max={this.state.temp_max} temp_forecast_1={this.state.temp_forecast_1} icon={this.state.icon} description={this.state.description} />
+        <Response
+            forecast={this.state.forecast}
+            temp={this.state.temp}
+            temp_min={this.state.temp_min}
+            temp_max={this.state.temp_max}
+            icon={this.state.icon}
+            description={this.state.description}
+            wind={this.state.wind}
+            visibility={this.state.visibility}
+            humidity={this.state.humidity}
+        />
         {/*) : (<p>Aucune données</p>)}*/}
       </div>
     )

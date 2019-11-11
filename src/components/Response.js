@@ -1,6 +1,37 @@
 import React from "react";
 import { Sun, CloudRain, CloudSnow, Cloud, CloudLightning, CloudDrizzle, AlignRight, Droplet, Thermometer, Moon, Wind, Eye } from 'react-feather';
 import Form from "./Form";
+import Item from './Item';
+
+export function checkSwitch (v) {
+    switch(v) {
+        case 'Clear':
+            if (new Date().getHours() > 6 && new Date().getHours() < 18) {
+                return <Moon className="card--today-icon" />
+            } else {
+                return <Sun className="card--today-icon" />
+            }
+            break;
+        case 'Drizzle':
+            return <CloudDrizzle className="card--today-icon" />
+            break;
+        case 'Rain':
+            return <CloudRain className="card--today-icon" />
+            break;
+        case 'Atmosphere':
+            return <AlignRight className="card--today-icon" />
+            break;
+        case 'Clouds':
+            return <Cloud className="card--today-icon" />
+            break;
+        case 'Snow':
+            return <CloudSnow className="card--today-icon" />
+            break;
+        case 'Thunderstorm':
+            return <CloudLightning className="card--today-icon" />
+            break;
+    }
+}
 
 class Response extends React.Component {
 
@@ -23,41 +54,11 @@ class Response extends React.Component {
     }
 
     render() {
-        const checkSwitch = () => {
-            switch(this.props.icon) {
-                case 'Clear':
-                    if (new Date().getHours() > 18) {
-                        return <Moon className="card--today-icon" />
-                    } else {
-                        return <Sun className="card--today-icon" />
-                    }
-                break;
-                case 'Drizzle':
-                    return <CloudDrizzle className="card--today-icon" />
-                break;
-                case 'Rain':
-                    return <CloudRain className="card--today-icon" />
-                break;    
-                case 'Atmosphere':
-                    return <AlignRight className="card--today-icon" />
-                break;    
-                case 'Clouds':
-                    return <Cloud className="card--today-icon" />
-                break;        
-                case 'Snow':
-                    return <CloudSnow className="card--today-icon" />
-                break;        
-                case 'Thunderstorm':
-                    return <CloudLightning className="card--today-icon" />
-                break;
-            }
-        }
-
         return (
             <div className="container">
                 <div className="row bg-detail">
                     <div className="col-md-4 bg">
-                        {checkSwitch()}
+                        {checkSwitch(this.props.icon)}
                         <div className="display-3">
                             {this.props.temp}°C
                         </div>
@@ -87,7 +88,7 @@ class Response extends React.Component {
                                     <Droplet />
                                 </div>
                                 <div className="flex-column">
-                                    <p>{this.props.temp_min} %</p>
+                                    <p>{this.props.humidity} %</p>
                                     <p>Humidité</p>
                                 </div>
                             </div>
@@ -98,7 +99,7 @@ class Response extends React.Component {
                                     <Wind />
                                 </div>
                                 <div className="flex-column">
-                                    <p>{this.props.temp_min} km/h</p>
+                                    <p>{this.props.wind} km/h</p>
                                     <p>Vent</p>
                                 </div>
                             </div>
@@ -107,35 +108,23 @@ class Response extends React.Component {
                                     <Eye />
                                 </div>
                                 <div className="flex-column">
-                                    <p>{this.props.temp_min} km</p>
+                                    <p>{this.props.visibility} km</p>
                                     <p>Visibilité</p>
                                 </div>
                             </div>
                         </div>
                         <div className="row my-4 no-gutters">
-                            <div className="col-12">
+                            <div className="col-12 mb-3">
                                 <h5>Prévisions / 3h</h5>
                             </div>
-                            <div className="col d-flex flex-column justify-content-center">
-                                <Sun />
-                                16°
-                                <p>25/01/19<br/>18:00</p>
-                            </div>
-                            <div className="col text-center">
-                                Test
-                            </div>
-                            <div className="col text-center">
-                                Test
-                            </div>
-                            <div className="col text-center">
-                                Test
-                            </div>
-                            <div className="col text-center">
-                                Test
-                            </div>
+                            {this.props.forecast.map((item, index) => (
+                                <Item
+                                    key={index}
+                                    {...item}
+                                />
+                            ))}
                         </div>
                     </div>
-
                 </div>
             </div>
         )

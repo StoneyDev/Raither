@@ -33,7 +33,7 @@ p {
 .detail {
     padding: 2rem;
     @media all and (min-width: 992px) {
-        padding: 5rem;
+        padding: 4rem;
     }
 }
 
@@ -71,5 +71,16 @@ p {
         box-shadow: unset;
         color: #fff;
         background-color: transparent;
+    }
+}
+
+.forecast {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    svg {
+        width: 30%;
+        height: auto;
     }
 }
