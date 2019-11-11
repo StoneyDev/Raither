@@ -1,0 +1,75 @@
+body {
+    background-color: $bg;
+    color: #f1f1f1;
+    font-family: 'Rubik', sans-serif;
+}
+
+p {
+    margin-bottom: 0;
+}
+
+.d {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card {
+    &--today {
+        @media all and (min-width: 992px) {
+            margin-left: 2rem;
+        }
+        &-icon {
+            width: 30%;
+            height: auto;
+        }
+    }
+
+}
+
+.bg-detail {
+    background-color: $bg-1;
+    border-radius: 1.5rem;
+}
+.detail {
+    padding: 2rem;
+    @media all and (min-width: 992px) {
+        padding: 5rem;
+    }
+}
+
+.bg {
+    background-image: url("/img/landscape.png");
+    border-radius: 1.5rem;
+    z-index: 1;
+    padding: 2.5rem;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
+}
+
+.line-bottom {
+    border-bottom: 3px solid #fff;
+}
+
+.icon {
+    border-radius: 100px;
+    margin-right: 1.5rem;
+    background-color: $bg;
+    padding: 1rem;
+    display: inline-block;
+}
+
+.custom-input {
+    background-color: transparent;
+    border: 0;
+    color: #fff;
+    &:focus {
+        box-shadow: unset;
+        color: #fff;
+        background-color: transparent;
+    }
+}
