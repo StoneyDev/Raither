@@ -1,5 +1,5 @@
 import React from 'react';
-import {checkSwitch} from "../Response";
+import {checkSwitch} from "./Response";
 
 const Forecast = props => (
     <div className="col forecast">
