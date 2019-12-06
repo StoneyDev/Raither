@@ -4,113 +4,106 @@ import Form from "./Form";
 import Forecast from "./Forecast";
 import Clock from "./Clock";
 
-export function checkSwitch (icon) {
+export function checkWeatherIcon(icon) {
+    const currentHours = new Date().getHours();
     switch(icon) {
         case 'Clear':
-            if (new Date().getHours() > 6 && new Date().getHours() < 18) {
-                return <Moon className="card--today-icon" />
-            } else {
-                return <Sun className="card--today-icon" />
-            }
+            return currentHours > 6 && currentHours < 18 ? <Sun className="weather-icon" /> : <Moon className="weather-icon" />
             break;
         case 'Drizzle':
-            return <CloudDrizzle className="card--today-icon" />
+            return <CloudDrizzle className="weather-icon" />
             break;
         case 'Rain':
-            return <CloudRain className="card--today-icon" />
-            break;
-        case 'Atmosphere':
-            return <AlignRight className="card--today-icon" />
+            return <CloudRain className="weather-icon" />
             break;
         case 'Clouds':
-            return <Cloud className="card--today-icon" />
+            return <Cloud className="weather-icon" />
+            break;
+        case 'Mist':
+            return <AlignRight className="weather-icon" />
             break;
         case 'Snow':
-            return <CloudSnow className="card--today-icon" />
+            return <CloudSnow className="weather-icon" />
             break;
         case 'Thunderstorm':
-            return <CloudLightning className="card--today-icon" />
+            return <CloudLightning className="weather-icon" />
             break;
         default:
-            return <Image className="card--today-icon" />
+            return <Image className="weather-icon" />
     }
 }
 
-class Response extends React.Component {
-    render() {
-        return (
-            <div className="row bg-detail">
-                <div className="col-md-4 bg">
-                    {checkSwitch(this.props.icon)}
-                    <div className="display-3">
-                        {this.props.temp}°C
-                    </div>
-                    <p className="text-capitalize font-weight-bold">{this.props.description}</p>
+const Response = props => (
+    <div className="row bg">
+        <div className="col-md-4 illustration-img">
+            {checkWeatherIcon(props.icon)}
+            <div className="display-3">
+                {props.temp}°C
+            </div>
+            <p className="text-capitalize font-weight-bold">{props.description}</p>
+        </div>
+        <div className="col-md container-p">
+            <div className="row pb-4 no-gutters line-bottom">
+                <div className="col-md display-4">
+                    <Form getWeather={props.getWeather} />
                 </div>
-                <div className="col-md detail">
-                    <div className="row pb-4 no-gutters line-bottom">
-                        <div className="col-md display-4">
-                            <Form getWeather={this.props.getWeather} />
-                        </div>
-                        <div className="col-md display-4 text-center text-md-right">
-                            <Clock />
-                        </div>
+                <div className="col-md display-4 text-center text-md-right">
+                    <Clock />
+                </div>
+            </div>
+            <div className="row no-gutters weather-detail">
+                <div className="col-md mb-4 mb-md-0 weather-detail--item">
+                    <div className="weather-detail--item-icon">
+                        <Thermometer />
                     </div>
-                    <div className="row py-4 no-gutters">
-                        <div className="col-md mb-4 mb-md-0 d-flex align-items-center">
-                            <div className="icon">
-                                <Thermometer />
-                            </div>
-                            <div className="flex-column">
-                                <p className="font-weight-bold">{this.props.temp_min}° | {this.props.temp_max}°</p>
-                                <p>Temp. min|max</p>
-                            </div>
-                        </div>
-                        <div className="col-md d-flex align-items-center">
-                            <div className="icon">
-                                <Droplet />
-                            </div>
-                            <div className="flex-column">
-                                <p className="font-weight-bold">{this.props.humidity} %</p>
-                                <p>Humidité</p>
-                            </div>
-                        </div>
+                    <div className="weather-detail--item-data">
+                        <p className="font-weight-bold">{props.temp_min}° | {props.temp_max}°</p>
+                        <p>Temp. min|max</p>
                     </div>
-                    <div className="row no-gutters">
-                        <div className="col-md mb-4 mb-md-0 d-flex align-items-center">
-                            <div className="icon">
-                                <Wind />
-                            </div>
-                            <div className="flex-column">
-                                <p className="font-weight-bold">{this.props.wind} m/s</p>
-                                <p>Vent</p>
-                            </div>
-                        </div>
-                        <div className="col-md d-flex align-items-center">
-                            <div className="icon">
-                                <Cloud />
-                            </div>
-                            <div className="flex-column">
-                                <p className="font-weight-bold">{this.props.clouds} %</p>
-                                <p>Nuages</p>
-                            </div>
-                        </div>
+                </div>
+                <div className="col-md weather-detail--item">
+                    <div className="weather-detail--item-icon">
+                        <Droplet />
                     </div>
-                    <div className="row my-4 no-gutters">
-                        <div className="col-12 mb-3">
-                            <h5>Prévisions / 3h</h5>
-                        </div>
-                        {this.props.forecast.map((item, index) => (
-                            <Forecast
-                                key={index}
-                                {...item}
-                            />
-                        ))}
+                    <div className="weather-detail--item-data">
+                        <p className="font-weight-bold">{props.humidity} %</p>
+                        <p>Humidité</p>
                     </div>
                 </div>
             </div>
-        )
-    }
-}
+            <div className="row no-gutters">
+                <div className="col-md mb-4 mb-md-0 weather-detail--item">
+                    <div className="weather-detail--item-icon">
+                        <Wind />
+                    </div>
+                    <div className="weather-detail--item-data">
+                        <p className="font-weight-bold">{props.wind} m/s</p>
+                        <p>Vent</p>
+                    </div>
+                </div>
+                <div className="col-md weather-detail--item">
+                    <div className="weather-detail--item-icon">
+                        <Cloud />
+                    </div>
+                    <div className="weather-detail--item-data">
+                        <p className="font-weight-bold">{props.clouds} %</p>
+                        <p>Nuages</p>
+                    </div>
+                </div>
+            </div>
+            <div className="row my-4 no-gutters">
+                <div className="col-12 mb-3">
+                    <h4>Prévisions / 3h</h4>
+                </div>
+                {props.forecast && props.forecast.map((item, index) => (
+                    <Forecast
+                        key={index}
+                        {...item}
+                    />
+                ))}
+            </div>
+        </div>
+    </div>
+)
 
 export default Response;

@@ -1,0 +1,12 @@
+.forecast {
+   &-item {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+      svg {
+         width: 30%;
+         height: auto;
+      }
+   }
+}

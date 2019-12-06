@@ -1,0 +1,24 @@
+.weather {
+   &-icon {
+      width: 30%;
+      height: auto;
+   }
+   &-detail {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+      &--item {
+         display: flex;
+         align-items: center;
+         &-icon {
+            border-radius: 100px;
+            margin-right: 1.5rem;
+            background-color: $bg;
+            padding: 1rem;
+            display: inline-block;
+         }
+         &-data {
+            flex-direction: column;
+         }
+      }
+   }
+}

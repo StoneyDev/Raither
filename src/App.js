@@ -30,50 +30,45 @@ class App extends React.Component {
         axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=fr`)
             .then(res => {
                 const all = res.data;
-                this.setState(
-                    {
-                        temp: (all.main.temp).toFixed(),
-                        temp_min: (all.main.temp_min).toFixed(),
-                        temp_max: (all.main.temp_max).toFixed(),
-                        wind: (all.wind.speed).toFixed(),
-                        clouds: all.clouds.all ? all.clouds.all : "N/A",
-                        humidity: all.main.humidity,
-                        icon: all.weather[0].main,
-                        description: all.weather[0].description
-                    }
-                );
+                this.setState({
+                    temp: (all.main.temp).toFixed(),
+                    temp_min: (all.main.temp_min).toFixed(),
+                    temp_max: (all.main.temp_max).toFixed(),
+                    wind: (all.wind.speed).toFixed(),
+                    clouds: all.clouds.all ? all.clouds.all : "N/A",
+                    humidity: all.main.humidity,
+                    icon: all.weather[0].main,
+                    description: all.weather[0].description,
+                    error: ''
+                });
                 this.getForecast(city);
             })
             .catch(err => {
-                this.setState(
-                    {
-                        error: `Une erreur est survenue. Veillez réessayer. (${err})`
-                    }
-                )
+                this.setState({
+                    error: `Une erreur est survenue. (${err})`
+                })
             })
-    }
+    };
 
     getForecast = async (city) => {
         axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric&cnt=5&lang=fr&cnt=5`)
             .then(res => {
                 const all = res.data;
-                this.setState(
-                    {
-                        forecast: all.list.map(item => ({
+                this.setState({
+                    forecast: all.list.map(
+                        item => ({
                             date: moment.unix(item.dt).format('D MMM HH:mm'),
                             temp: (item.main.temp).toFixed(),
                             humidity: item.main.humidity,
                             weather: item.weather[0].main
-                        }))
-                    }
-                )
+                        })
+                    )
+                })
             })
             .catch(err => {
-                this.setState(
-                    {
-                        error: `Une erreur est survenue. Veillez réessayer. (${err})`
-                    }
-                )
+                this.setState({
+                    error: `Une erreur est survenue. (${err})`
+                })
             })
     }
 
@@ -84,12 +79,10 @@ class App extends React.Component {
                     <div className="row mb-5">
                         <div className="col-md-6 offset-md-3 text-center">
                             <Titles />
+                            {this.state.error && <p className="text-center text-danger">{this.state.error}</p>}
                         </div>
                     </div>
-                    {this.state.error ? (
-                        <p className="text-center">{this.state.error}</p>
-                    ) : (
-                        <Response
+                    <Response
                         getWeather={this.getWeather}
                         forecast={this.state.forecast}
                         temp={this.state.temp}
@@ -100,8 +93,7 @@ class App extends React.Component {
                         wind={this.state.wind}
                         clouds={this.state.clouds}
                         humidity={this.state.humidity}
-                        />
-                    )}
+                    />
                 </div>
             </div>
         )

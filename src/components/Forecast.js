@@ -1,9 +1,9 @@
 import React from 'react';
-import {checkSwitch} from "./Response";
+import {checkWeatherIcon} from "./Response";
 
 const Forecast = props => (
-    <div className="col forecast">
-        {checkSwitch(props.weather)}
+    <div className="col forecast-item">
+        {checkWeatherIcon(props.weather)}
         <h4 className="my-2">{props.temp}°</h4>
         <p className="small">{props.date}</p>
     </div>
