@@ -12,21 +12,35 @@ const API_KEY = 'bcd6a93bf6dc84270d68f9b866327fcb';
 class App extends React.Component {
 
     state = {
-        temp: 'N/A',
-        temp_min: 'N/A',
-        temp_max: 'N/A',
-        icon: undefined,
-        wind: 'N/A',
-        clouds: 'N/A',
-        humidity: 'N/A',
-        description: undefined,
-        forecast: [],
-        error: ''
+        data: {
+            city: '',
+            temp: 'N/A',
+            temp_min: 'N/A',
+            temp_max: 'N/A',
+            icon: undefined,
+            wind: 'N/A',
+            clouds: 'N/A',
+            humidity: 'N/A',
+            description: undefined,
+            forecast: [],
+            error: ''
+        }
     }
 
-    getWeather = async (e) => {
+    componentDidMount() {
+        setInterval(() => {
+            !!(this.state.city) && this.getWeather(this.state.city)
+        }, 1800000)
+    }
+
+    setCity = (e) => {
         e.preventDefault();
-        const city = e.target.elements.city.value;
+        this.setState({city: e.target.elements.city.value}, () => {
+            this.getWeather(this.state.city)
+        });
+    }
+
+    getWeather = async (city) => {
         axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=fr`)
             .then(res => {
                 const all = res.data;
@@ -44,14 +58,16 @@ class App extends React.Component {
                 this.getForecast(city);
             })
             .catch(err => {
+                const msg = err.response.status === 404 ? 'Aucune ville ne correspond à votre recherche ! Veuillez réessayer.' : 'Une erreur technique est survenue, merci de réessayer ultérieurement.';
                 this.setState({
-                    error: `Une erreur est survenue. (${err})`
+                    error: msg,
+                    city: ''
                 })
             })
     };
 
     getForecast = async (city) => {
-        axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric&cnt=5&lang=fr&cnt=5`)
+        axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric&lang=fr&cnt=6`)
             .then(res => {
                 const all = res.data;
                 this.setState({
@@ -67,7 +83,7 @@ class App extends React.Component {
             })
             .catch(err => {
                 this.setState({
-                    error: `Une erreur est survenue. (${err})`
+                    error: `Une erreur technique est survenue, merci de réessayer ultérieurement. (${err})`
                 })
             })
     }
@@ -77,13 +93,13 @@ class App extends React.Component {
             <div>
                 <div className="container py-5">
                     <div className="row mb-5">
-                        <div className="col-md-6 offset-md-3 text-center">
+                        <div className="col-md-8 offset-md-2 text-center">
                             <Titles />
-                            {this.state.error && <p className="text-center text-danger">{this.state.error}</p>}
+                            {this.state.error && <p className="text-center mt-4 text-danger">{this.state.error}</p>}
                         </div>
                     </div>
                     <Response
-                        getWeather={this.getWeather}
+                        setCity={this.setCity}
                         forecast={this.state.forecast}
                         temp={this.state.temp}
                         temp_min={this.state.temp_min}
